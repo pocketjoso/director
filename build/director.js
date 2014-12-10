@@ -1,8 +1,8 @@
 
 
 //
-// Generated on Sat Dec 06 2014 16:08:09 GMT-0500 (EST) by Charlie Robbins, Paolo Fragomeni & the Contributors (Using Codesurgeon).
-// Version 1.2.4
+// Generated on Wed Dec 10 2014 11:14:09 GMT+0000 (GMT) by Charlie Robbins, Paolo Fragomeni & the Contributors (Using Codesurgeon).
+// Version 1.2.5
 //
 
 (function (exports) {
@@ -557,8 +557,8 @@ Router.prototype.traverse = function(method, path, routes, regexp, filter) {
     applyFilter(newRoutes);
     return newRoutes;
   }
-  if (path === this.delimiter && routes[method]) {
-    next = [ [ routes.before, routes[method] ].filter(Boolean) ];
+  if (path === this.delimiter && (routes[method] || routes.on)) {
+    next = [ [ routes.before, routes[method] || routes.on ].filter(Boolean) ];
     next.after = [ routes.after ].filter(Boolean);
     next.matched = true;
     next.captures = [];
@@ -574,13 +574,13 @@ Router.prototype.traverse = function(method, path, routes, regexp, filter) {
       if (!match) {
         continue;
       }
-      if (match[0] && match[0] == path && routes[r][method]) {
-        next = [ [ routes[r].before, routes[r][method] ].filter(Boolean) ];
+      if (match[0] && match[0] == path && (routes[r][method] || routes[r].on)) {
+        next = [ [ routes[r].before, routes[r][method] || routes[r].on ].filter(Boolean) ];
         next.after = [ routes[r].after ].filter(Boolean);
         next.matched = true;
         next.captures = match.slice(1);
         if (this.recurse && routes === this.routes) {
-          next.push([ routes.before, routes.on ].filter(Boolean));
+          next.push([ routes.before ].filter(Boolean));
           next.after = next.after.concat([ routes.after ].filter(Boolean));
         }
         return filterRoutes(next);
@@ -591,10 +591,10 @@ Router.prototype.traverse = function(method, path, routes, regexp, filter) {
           fns = fns.concat(next);
         }
         if (this.recurse) {
-          fns.push([ routes[r].before, routes[r].on ].filter(Boolean));
+          fns.push([ routes[r].before, routes[r][method] || routes[r].on ].filter(Boolean));
           next.after = next.after.concat([ routes[r].after ].filter(Boolean));
           if (routes === this.routes) {
-            fns.push([ routes["before"], routes["on"] ].filter(Boolean));
+            fns.push([ routes["before"] ].filter(Boolean));
             next.after = next.after.concat([ routes["after"] ].filter(Boolean));
           }
         }
