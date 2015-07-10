@@ -1,7 +1,7 @@
 
 
 //
-// Generated on Wed Dec 10 2014 11:14:09 GMT+0000 (GMT) by Charlie Robbins, Paolo Fragomeni & the Contributors (Using Codesurgeon).
+// Generated on Fri Jul 10 2015 13:49:58 GMT+0100 (BST) by Charlie Robbins, Paolo Fragomeni & the Contributors (Using Codesurgeon).
 // Version 1.2.5
 //
 
@@ -69,9 +69,14 @@ var listener = {
         // this would cause Chrome to run it twise. Currently the only
         // workaround seems to be to set the handler after the initial page load
         // http://code.google.com/p/chromium/issues/detail?id=63040
-        setTimeout(function() {
+
+        // NOTE: this timeout fix causes issues if user navigates before onpopstate has been set,
+        // as 'fire' fn expects it. For our (State's) use case, it doesn't seem to cause any issues
+        // to just set the handler straight away.
+
+        // setTimeout(function() {
           window.onpopstate = onchange;
-        }, 500);
+        // }, 500);
       }
       else {
         window.onhashchange = onchange;
